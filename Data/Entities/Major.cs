@@ -10,7 +10,7 @@ namespace Data.Entities
     public class Major : BaseEntity
     {
         [Required]
-        [StringLength(50)]
+        [StringLength(100)]
         public required string Name { get; set; }
 
         [Required]
