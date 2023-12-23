@@ -23,7 +23,7 @@ namespace ApplicationService.Implementations
                 //Applying pagination
                 if(ValidatePaginationOptions(page, itemsPerPage) && page <= GetPageCount(itemsPerPage, faculties))
                 {
-                    faculties.Skip((page - 1) * itemsPerPage).Take(itemsPerPage).ToList();
+                    faculties = faculties.Skip((page - 1) * itemsPerPage).Take(itemsPerPage).ToList();
                 }
                 else
                 {
@@ -92,6 +92,23 @@ namespace ApplicationService.Implementations
             {
                 return false;
             }
+        }
+
+        public int GetPageCount(int itemsPerPage)
+        {
+            if (itemsPerPage <= 0)
+            {
+                return 1;
+            }
+
+            int pageCount = 0;
+
+            using (UnitOfWork unitOfWork = new UnitOfWork())
+            {
+                pageCount = (int)Math.Ceiling((double)unitOfWork.FacultyRepository.Count() / itemsPerPage);
+            }
+
+            return pageCount;
         }
     }
 }

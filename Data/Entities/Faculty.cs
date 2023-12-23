@@ -13,7 +13,6 @@ namespace Data.Entities
         [StringLength(100)]
         public required string Name { get; set; }
 
-        [Required]
-        public required virtual ICollection<Student> Students { get; set; }
+        public virtual ICollection<Student>? Students { get; set; }
     }
 }

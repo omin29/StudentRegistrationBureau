@@ -1,3 +1,4 @@
+using ApplicationService.Implementations;
 using Data.Context;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,6 +15,7 @@ namespace StudentRegistrationBureauMVC
             builder.Services.AddDbContext<StudentRegistrationBureauContext>(options => options.UseSqlServer(
                 builder.Configuration.GetConnectionString("DefaultConnection")
             ));
+            builder.Services.AddSingleton(typeof(MajorManagementService));
 
             var app = builder.Build();
 

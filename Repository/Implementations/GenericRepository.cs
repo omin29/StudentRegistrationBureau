@@ -78,5 +78,17 @@ namespace Repository.Implementations
             dbSet.Attach(entityToUpdate);
             context.Entry(entityToUpdate).State = EntityState.Modified;
         }
+
+        public virtual int Count(Expression<Func<TEntity, bool>> filter = null)
+        {
+            IQueryable<TEntity> query = dbSet;
+
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            return query.Count();
+        }
     }
 }

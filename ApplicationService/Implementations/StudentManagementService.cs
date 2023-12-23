@@ -32,7 +32,7 @@ namespace ApplicationService.Implementations
                 //Applying pagination
                 if (ValidatePaginationOptions(page, itemsPerPage) && page <= GetPageCount(itemsPerPage, students))
                 {
-                    students.Skip((page - 1) * itemsPerPage).Take(itemsPerPage).ToList();
+                    students = students.Skip((page - 1) * itemsPerPage).Take(itemsPerPage).ToList();
                 }
                 else
                 {
@@ -101,6 +101,34 @@ namespace ApplicationService.Implementations
             {
                 return false;
             }
+        }
+
+        public int GetPageCount(int itemsPerPage, IFilterBuilder<Student>? filterBuilder = null)
+        {
+            if (itemsPerPage <= 0)
+            {
+                return 1;
+            }
+
+            int pageCount = 0;
+
+            using (UnitOfWork unitOfWork = new UnitOfWork())
+            {
+                int studentCount = 0;
+                if(filterBuilder == null)
+                {
+                    studentCount = unitOfWork.StudentRepository.Count();
+                }
+                else
+                {
+                    var filter = filterBuilder.BuildFilter();
+                    studentCount = unitOfWork.StudentRepository.Count(filter);
+                }
+
+                pageCount = (int)Math.Ceiling((double)studentCount / itemsPerPage);
+            }
+
+            return pageCount;
         }
     }
 }

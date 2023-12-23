@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(StudentRegistrationBureauContext))]
-    [Migration("20231221120325_Initial")]
+    [Migration("20231223153014_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -98,8 +98,8 @@ namespace Data.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 

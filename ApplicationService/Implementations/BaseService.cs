@@ -31,7 +31,7 @@ namespace ApplicationService.Implementations
 			}
         }
 
-        public int GetPageCount(int itemsPerPage, IEnumerable<object> entities)
+        protected int GetPageCount(int itemsPerPage, IEnumerable<object> entities)
         {
             if (itemsPerPage <= 0)
             {

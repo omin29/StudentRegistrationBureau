@@ -1,5 +1,6 @@
 ﻿using Data.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,6 +38,18 @@ namespace Data.Context
             modelBuilder.Entity<Enrollment>()
                 .HasAlternateKey(c => new { c.CourseId, c.StudentId })
                 .HasName("AlternativeKeyEnrollment");
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+
+            IConfigurationRoot configuration = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json")
+            .Build();
+
+            optionsBuilder
+                .UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
         }
     }
 }
