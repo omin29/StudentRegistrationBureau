@@ -53,6 +53,27 @@ namespace Repository.Implementations
             return dbSet.Find(id);
         }
 
+        public virtual TEntity GetByID(object id, string includeProperties)
+        {
+            TEntity searchedEntity = dbSet.Find(id);
+
+            if (searchedEntity != null)
+            {
+                IQueryable<TEntity> query = dbSet;
+                query = query.Where(entity => entity.Equals(searchedEntity));
+
+                foreach (var includeProperty in includeProperties.Split
+                (new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProperty);
+                }
+
+                searchedEntity = query.FirstOrDefault();
+            }
+
+            return searchedEntity;
+        }
+
         public virtual void Insert(TEntity entity)
         {
             dbSet.Add(entity);

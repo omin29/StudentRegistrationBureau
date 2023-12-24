@@ -65,7 +65,6 @@ namespace Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Students", x => x.Id);
-                    table.UniqueConstraint("UniqueFacultyNumber", x => x.FacultyNumber);
                     table.ForeignKey(
                         name: "FK_Students_Faculties_FacultyId",
                         column: x => x.FacultyId,
@@ -122,6 +121,12 @@ namespace Data.Migrations
                 name: "IX_Students_MajorId",
                 table: "Students",
                 column: "MajorId");
+
+            migrationBuilder.CreateIndex(
+                name: "UniqueIndexFacultyNumber",
+                table: "Students",
+                column: "FacultyNumber",
+                unique: true);
         }
 
         /// <inheritdoc />

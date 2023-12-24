@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(StudentRegistrationBureauContext))]
-    [Migration("20231223153014_Initial")]
+    [Migration("20231224174317_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -142,10 +142,11 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAlternateKey("FacultyNumber")
-                        .HasName("UniqueFacultyNumber");
-
                     b.HasIndex("FacultyId");
+
+                    b.HasIndex("FacultyNumber")
+                        .IsUnique()
+                        .HasDatabaseName("UniqueIndexFacultyNumber");
 
                     b.HasIndex("MajorId");
 

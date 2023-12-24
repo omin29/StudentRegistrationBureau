@@ -17,6 +17,7 @@ namespace StudentRegistrationBureauMVC
             ));
             builder.Services.AddSingleton(typeof(MajorManagementService));
             builder.Services.AddSingleton(typeof(FacultyManagementService));
+            builder.Services.AddSingleton(typeof(StudentManagementService));
 
             var app = builder.Build();
 

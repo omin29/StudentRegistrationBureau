@@ -32,8 +32,9 @@ namespace Data.Context
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Student>()
-                .HasAlternateKey(c => c.FacultyNumber)
-                .HasName("UniqueFacultyNumber");
+                .HasIndex(c => c.FacultyNumber)
+                .IsUnique()
+                .HasDatabaseName("UniqueIndexFacultyNumber");
 
             modelBuilder.Entity<Enrollment>()
                 .HasAlternateKey(c => new { c.CourseId, c.StudentId })

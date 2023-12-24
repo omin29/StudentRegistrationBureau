@@ -139,10 +139,11 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAlternateKey("FacultyNumber")
-                        .HasName("UniqueFacultyNumber");
-
                     b.HasIndex("FacultyId");
+
+                    b.HasIndex("FacultyNumber")
+                        .IsUnique()
+                        .HasDatabaseName("UniqueIndexFacultyNumber");
 
                     b.HasIndex("MajorId");
 

@@ -52,7 +52,7 @@ namespace ApplicationService.Implementations
 
             using (UnitOfWork unitOfWork = new UnitOfWork())
             {
-                student = unitOfWork.StudentRepository.GetByID(id);
+                student = unitOfWork.StudentRepository.GetByID(id, "Faculty,Major");
             }
 
             return student;
