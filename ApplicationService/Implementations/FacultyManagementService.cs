@@ -49,6 +49,11 @@ namespace ApplicationService.Implementations
             return faculty;
         }
 
+        public bool Exists(int id)
+        {
+            return GetById(id) != null;
+        }
+
         public bool Save(Faculty faculty)
         {
             try

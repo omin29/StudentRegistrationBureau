@@ -49,6 +49,11 @@ namespace ApplicationService.Implementations
             return major;
         }
 
+        public bool Exists(int id)
+        {
+            return GetById(id) != null;
+        }
+
         public bool Save(Major major)
         {
             try

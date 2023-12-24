@@ -58,6 +58,11 @@ namespace ApplicationService.Implementations
             return student;
         }
 
+        public bool Exists(int id)
+        {
+            return GetById(id) != null;
+        }
+
         public bool Save(Student student)
         {
             try

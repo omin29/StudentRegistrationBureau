@@ -22,5 +22,16 @@ namespace StudentRegistrationBureauMVC.Models
             Name = major.Name;
             Students = major.Students;
         }
+
+        public Major ToEntity()
+        {
+            Major major = new Major()
+            {
+                Id = Id,
+                Name = Name
+            };
+
+            return major;
+        }
     }
 }

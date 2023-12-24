@@ -57,20 +57,17 @@ namespace StudentRegistrationBureauMVC.Controllers
         // POST: Majors/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(MajorVM major)
+        public IActionResult Create(MajorVM majorVM)
         {
             if (ModelState.IsValid)
             {
-                Major createdMajor = new Major() 
-                {
-                    Id = 0,
-                    Name = major.Name
-                };
+                Major createdMajor = majorVM.ToEntity();
+                createdMajor.Id = 0;
                 _majorService.Save(createdMajor);
 
                 return RedirectToAction(nameof(Index));
             }
-            return View(major);
+            return View(majorVM);
         }
 
         // GET: Majors/Edit/5
@@ -92,9 +89,9 @@ namespace StudentRegistrationBureauMVC.Controllers
         // POST: Majors/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, MajorVM major)
+        public IActionResult Edit(int id, MajorVM majorVM)
         {
-            if (id != major.Id)
+            if (id != majorVM.Id)
             {
                 return NotFound();
             }
@@ -103,16 +100,12 @@ namespace StudentRegistrationBureauMVC.Controllers
             {
                 try
                 {
-                    Major editedMajor = new Major()
-                    {
-                        Id = major.Id,
-                        Name = major.Name
-                    };
+                    Major editedMajor = majorVM.ToEntity();
                     _majorService.Save(editedMajor);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!MajorExists(major.Id))
+                    if (!_majorService.Exists(majorVM.Id))
                     {
                         return NotFound();
                     }
@@ -123,7 +116,7 @@ namespace StudentRegistrationBureauMVC.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(major);
+            return View(majorVM);
         }
 
         // GET: Majors/Delete/5
@@ -155,11 +148,6 @@ namespace StudentRegistrationBureauMVC.Controllers
             }
 
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool MajorExists(int id)
-        {
-            return _majorService.GetById(id) != null;
         }
     }
 }
