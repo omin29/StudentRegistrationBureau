@@ -16,6 +16,7 @@ namespace StudentRegistrationBureauMVC
                 builder.Configuration.GetConnectionString("DefaultConnection")
             ));
             builder.Services.AddSingleton(typeof(MajorManagementService));
+            builder.Services.AddSingleton(typeof(FacultyManagementService));
 
             var app = builder.Build();
 
