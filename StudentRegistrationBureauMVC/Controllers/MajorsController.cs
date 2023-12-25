@@ -63,9 +63,14 @@ namespace StudentRegistrationBureauMVC.Controllers
             {
                 Major createdMajor = majorVM.ToEntity();
                 createdMajor.Id = 0;
-                _majorService.Save(createdMajor);
+                bool isSuccessful = _majorService.Save(createdMajor);
+                if (isSuccessful)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
 
-                return RedirectToAction(nameof(Index));
+                ViewData["ErrorMessage"] =
+                    "Failed to create major! Ensure that the major is unique and try again.";
             }
             return View(majorVM);
         }
@@ -101,7 +106,11 @@ namespace StudentRegistrationBureauMVC.Controllers
                 try
                 {
                     Major editedMajor = majorVM.ToEntity();
-                    _majorService.Save(editedMajor);
+                    bool isSuccessful = _majorService.Save(editedMajor);
+                    if (isSuccessful)
+                    {
+                        return RedirectToAction(nameof(Index));
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -114,7 +123,8 @@ namespace StudentRegistrationBureauMVC.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                ViewData["ErrorMessage"] =
+                    "Failed to edit major! Ensure that the major is unique and try again.";
             }
             return View(majorVM);
         }
@@ -144,7 +154,13 @@ namespace StudentRegistrationBureauMVC.Controllers
             var major = _majorService.GetById(id);
             if (major != null)
             {
-                _majorService.Delete(id);
+                bool isSuccessful = _majorService.Delete(id);
+                if (!isSuccessful)
+                {
+                    ViewData["ErrorMessage"] = 
+                        "Failed to delete major! Ensure that the major has no students and try again.";
+                    return View(new MajorVM(major));
+                }
             }
 
             return RedirectToAction(nameof(Index));

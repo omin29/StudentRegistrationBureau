@@ -63,9 +63,14 @@ namespace StudentRegistrationBureauMVC.Controllers
             {
                 Faculty createdFaculty = facultyVM.ToEntity();
                 createdFaculty.Id = 0;
-                _facultyService.Save(createdFaculty);
+                bool isSuccessful = _facultyService.Save(createdFaculty);
+                if (isSuccessful)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
 
-                return RedirectToAction(nameof(Index));
+                ViewData["ErrorMessage"] =
+                    "Failed to create faculty! Ensure that the faculty is unique and try again.";
             }
             return View(facultyVM);
         }
@@ -101,7 +106,11 @@ namespace StudentRegistrationBureauMVC.Controllers
                 try
                 {
                     Faculty editedFaculty = facultyVM.ToEntity();
-                    _facultyService.Save(editedFaculty);
+                    bool isSuccessful = _facultyService.Save(editedFaculty);
+                    if (isSuccessful)
+                    {
+                        return RedirectToAction(nameof(Index));
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -114,7 +123,8 @@ namespace StudentRegistrationBureauMVC.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                ViewData["ErrorMessage"] =
+                    "Failed to edit faculty! Ensure that the faculty is unique and try again.";
             }
             return View(facultyVM);
         }
@@ -144,7 +154,13 @@ namespace StudentRegistrationBureauMVC.Controllers
             var faculty = _facultyService.GetById(id);
             if (faculty != null)
             {
-                _facultyService.Delete(id);
+                bool isSuccessful = _facultyService.Delete(id);
+                if (!isSuccessful)
+                {
+                    ViewData["ErrorMessage"] =
+                        "Failed to delete faculty! Ensure that the faculty has no students and try again.";
+                    return View(new FacultyVM(faculty));
+                }
             }
 
             return RedirectToAction(nameof(Index));

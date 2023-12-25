@@ -37,6 +37,10 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasDatabaseName("UniqueIndexCourse");
+
                     b.ToTable("Courses");
                 });
 
@@ -82,6 +86,10 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasDatabaseName("UniqueIndexFaculty");
+
                     b.ToTable("Faculties");
                 });
 
@@ -99,6 +107,10 @@ namespace Data.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasDatabaseName("UniqueIndexMajor");
 
                     b.ToTable("Majors");
                 });

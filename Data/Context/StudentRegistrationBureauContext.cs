@@ -39,6 +39,21 @@ namespace Data.Context
             modelBuilder.Entity<Enrollment>()
                 .HasAlternateKey(c => new { c.CourseId, c.StudentId })
                 .HasName("AlternativeKeyEnrollment");
+
+            modelBuilder.Entity<Major>()
+                .HasIndex(c => c.Name)
+                .IsUnique()
+                .HasDatabaseName("UniqueIndexMajor");
+
+            modelBuilder.Entity<Faculty>()
+                .HasIndex(c => c.Name)
+                .IsUnique()
+                .HasDatabaseName("UniqueIndexFaculty");
+
+            modelBuilder.Entity<Course>()
+                .HasIndex(c => c.Name)
+                .IsUnique()
+                .HasDatabaseName("UniqueIndexCourse");
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

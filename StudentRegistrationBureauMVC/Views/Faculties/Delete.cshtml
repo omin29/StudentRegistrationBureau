@@ -10,6 +10,12 @@
 <div>
     <h4>Faculty</h4>
     <hr />
+
+    @if (ViewData["ErrorMessage"] != null)
+    {
+        <h4 class="text-danger">@ViewData["ErrorMessage"]</h4>
+    }
+
     <dl class="row">
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Name)

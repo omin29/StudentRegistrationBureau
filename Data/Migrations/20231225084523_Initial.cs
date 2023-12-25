@@ -108,9 +108,27 @@ namespace Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "UniqueIndexCourse",
+                table: "Courses",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Enrollments_StudentId",
                 table: "Enrollments",
                 column: "StudentId");
+
+            migrationBuilder.CreateIndex(
+                name: "UniqueIndexFaculty",
+                table: "Faculties",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "UniqueIndexMajor",
+                table: "Majors",
+                column: "Name",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Students_FacultyId",
