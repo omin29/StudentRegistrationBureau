@@ -1,4 +1,5 @@
-﻿using StudentRegistrationBureauMVC.Models.Interfaces;
+﻿using ApplicationService.FilterBuilders;
+using StudentRegistrationBureauMVC.Models.Interfaces;
 using StudentRegistrationBureauMVC.Models.Shared;
 
 namespace StudentRegistrationBureauMVC.Models.IndexVMs
@@ -7,5 +8,7 @@ namespace StudentRegistrationBureauMVC.Models.IndexVMs
     {
         public IEnumerable<StudentVM>? Students { get; set; }
         public PagerVM Pager { get; set; } = new PagerVM();
+
+        public StudentFilterBuilder Filter { get; set; } = new StudentFilterBuilder();
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Data.Entities;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -10,8 +11,13 @@ namespace ApplicationService.FilterBuilders
 {
     public class StudentFilterBuilder : IFilterBuilder<Student>
     {
+        [Display(Name = "Faculty")]
         public int FacultyId { get; set; } = 0;
+
+        [Display(Name = "Major")]
         public int MajorId { get; set; } = 0;
+
+        [Display(Name = "Faculty number")]
         public string? FacultyNumber { get; set; }
         public string? FirstName { get; set; }
         public string? MiddleName { get; set; }

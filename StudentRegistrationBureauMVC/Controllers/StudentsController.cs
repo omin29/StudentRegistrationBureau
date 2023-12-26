@@ -30,9 +30,19 @@ namespace StudentRegistrationBureauMVC.Controllers
         // GET: Students
         public IActionResult Index(StudentIndexVM model)
         {
-            IEnumerable<Student> students = _studentService.Get(model.Pager.Page, model.Pager.ItemsPerPage);
+            IEnumerable<Student> students = _studentService.Get(model.Pager.Page, model.Pager.ItemsPerPage, model.Filter);
             model.Students = students.Select(student => new StudentVM(student));
-            model.Pager.PagesCount = _studentService.GetPageCount(model.Pager.ItemsPerPage);
+            model.Pager.PagesCount = _studentService.GetPageCount(model.Pager.ItemsPerPage, model.Filter);
+
+            /*Getting all faculties and majors for making drop-down lists which will be used for filtering.
+              The newly inserted elements are default values which indicate that no filter is being applied.*/
+            List<Faculty> faculties = _facultyService.Get(1, int.MaxValue).ToList();
+            faculties.Insert(0, new Faculty() { Id = 0, Name = "-" });
+            List<Major> majors = _majorService.Get(1, int.MaxValue).ToList();
+            majors.Insert(0, new Major() { Id = 0, Name = "-" });
+            ViewData["Faculties"] = new SelectList(faculties, "Id", "Name", model.Filter.FacultyId);
+            ViewData["Majors"] = new SelectList(majors, "Id", "Name", model.Filter.MajorId);
+
             return View(model);
         }
 
@@ -56,7 +66,7 @@ namespace StudentRegistrationBureauMVC.Controllers
         // GET: Students/Create
         public IActionResult Create()
         {
-            //Getting all faculties and majors for making drop-down list
+            //Getting all faculties and majors for making drop-down lists
             ViewData["FacultyId"] = new SelectList(_facultyService.Get(1, int.MaxValue), "Id", "Name");
             ViewData["MajorId"] = new SelectList(_majorService.Get(1, int.MaxValue), "Id", "Name");
             return View();
@@ -80,7 +90,7 @@ namespace StudentRegistrationBureauMVC.Controllers
                 ViewData["ErrorMessage"] = 
                     "Failed to create student! Ensure that the faculty number is unique and try again.";
             }
-            //Getting all faculties and majors for making drop-down list
+            //Getting all faculties and majors for making drop-down lists
             ViewData["FacultyId"] = new SelectList(_facultyService.Get(1, int.MaxValue), "Id", "Name", studentVM.FacultyId);
             ViewData["MajorId"] = new SelectList(_majorService.Get(1, int.MaxValue), "Id", "Name", studentVM.MajorId);
             return View(studentVM);
@@ -99,7 +109,7 @@ namespace StudentRegistrationBureauMVC.Controllers
             {
                 return NotFound();
             }
-            //Getting all faculties and majors for making drop-down list
+            //Getting all faculties and majors for making drop-down lists
             ViewData["FacultyId"] = new SelectList(_facultyService.Get(1, int.MaxValue), "Id", "Name", student.FacultyId);
             ViewData["MajorId"] = new SelectList(_majorService.Get(1, int.MaxValue), "Id", "Name", student.MajorId);
             return View(new StudentVM(student));
@@ -140,7 +150,7 @@ namespace StudentRegistrationBureauMVC.Controllers
                 ViewData["ErrorMessage"] =
                     "Failed to edit student! Ensure that the faculty number is unique and try again.";
             }
-            //Getting all faculties and majors for making drop-down list
+            //Getting all faculties and majors for making drop-down lists
             ViewData["FacultyId"] = new SelectList(_facultyService.Get(1, int.MaxValue), "Id", "Name", studentVM.FacultyId);
             ViewData["MajorId"] = new SelectList(_majorService.Get(1, int.MaxValue), "Id", "Name", studentVM.MajorId);
             return View(studentVM);

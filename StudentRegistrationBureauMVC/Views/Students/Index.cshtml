@@ -4,12 +4,43 @@
     ViewData["Title"] = "Students";
 }
 
+@{
+    ViewData["FacultyId"] = Model.Filter.FacultyId;
+    ViewData["MajorId"] = Model.Filter.MajorId;
+    ViewData["FacultyNumber"] = Model.Filter.FacultyNumber;
+}
+
 <h1>Students</h1>
 
 <hr />
 
+<div class="mb-2">
+    <h4>Filtering options</h4>
+    <form method="get" class="d-inline-block mb-1">
+        <input type="hidden" name="Pager.ItemsPerPage" value="@Model.Pager.ItemsPerPage" />
+        <div class="form-group">
+            <label asp-for="Filter.FacultyId" class="control-label"></label>
+            <select asp-for="Filter.FacultyId" class="form-control" asp-items="ViewBag.Faculties"></select>
+        </div>
+        <div class="form-group">
+            <label asp-for="Filter.MajorId" class="control-label"></label>
+            <select asp-for="Filter.MajorId" class="form-control" asp-items="ViewBag.Majors"></select>
+        </div>
+        <div class="form-group">
+            <label asp-for="Filter.FacultyNumber" class="control-label"></label>
+            <input asp-for="Filter.FacultyNumber" class="form-control" value="@Model.Filter.FacultyNumber" />
+        </div>
+        <div class="form-group d-flex gap-5">
+            <input type="submit" class="btn btn-primary" value="Filter" />
+            <a asp-action="Index" asp-route-Pager.ItemsPerPage="@Model.Pager.ItemsPerPage">
+                <!button type="button" class="btn btn-light border-dark">Clear filter</!button>
+            </a>
+        </div>
+    </form>
+</div>
+
 @{
-    await Html.RenderPartialAsync("/Views/Partial/PagerPartial.cshtml", Model.Pager);
+    await Html.RenderPartialAsync("/Views/Partial/StudentPagerPartial.cshtml", Model.Pager, ViewData);
 }
 
 <p>
