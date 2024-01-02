@@ -7,13 +7,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{31EED6A6-7
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{29CCB052-ECDD-49D2-9298-A98AD638FA9E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "Data\Data.csproj", "{86025528-EC50-4C92-BBA0-F3741B3CF491}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data", "Data\Data.csproj", "{86025528-EC50-4C92-BBA0-F3741B3CF491}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repository", "Repository\Repository.csproj", "{B71E6FAE-2917-4E52-BBDB-3AE086B7DFF4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repository", "Repository\Repository.csproj", "{B71E6FAE-2917-4E52-BBDB-3AE086B7DFF4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApplicationService", "ApplicationService\ApplicationService.csproj", "{3822D360-E0B3-4C73-BAC7-00AD1F65DCE0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApplicationService", "ApplicationService\ApplicationService.csproj", "{3822D360-E0B3-4C73-BAC7-00AD1F65DCE0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StudentRegistrationBureauMVC", "StudentRegistrationBureauMVC\StudentRegistrationBureauMVC.csproj", "{B73B7712-AF95-4AD7-AA80-566E7E12D20E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudentRegistrationBureauMVC", "StudentRegistrationBureauMVC\StudentRegistrationBureauMVC.csproj", "{B73B7712-AF95-4AD7-AA80-566E7E12D20E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -42,6 +42,7 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{29CCB052-ECDD-49D2-9298-A98AD638FA9E} = {31EED6A6-7EAA-4716-95BE-1FAEA782EAB7}
 		{86025528-EC50-4C92-BBA0-F3741B3CF491} = {31EED6A6-7EAA-4716-95BE-1FAEA782EAB7}
 		{B71E6FAE-2917-4E52-BBDB-3AE086B7DFF4} = {31EED6A6-7EAA-4716-95BE-1FAEA782EAB7}
 		{3822D360-E0B3-4C73-BAC7-00AD1F65DCE0} = {31EED6A6-7EAA-4716-95BE-1FAEA782EAB7}
