@@ -1,0 +1,26 @@
+﻿.navbar {
+    background-color: #D6E7FF;
+}
+
+.nav-item {
+    background: linear-gradient(to bottom,white 50%,transparent 50%);
+    background-size: 100% 200%;
+    transition: all 0.2s linear;
+    background-position-y: bottom;
+}
+
+.nav-item:hover {
+    background-position-y:top;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.table thead {
+    background-color: #D6E7FF;
+}
+
+.table tbody tr:nth-child(even) {
+    background-color: #EBF3FF;
+}
