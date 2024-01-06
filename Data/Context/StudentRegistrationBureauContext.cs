@@ -1,4 +1,5 @@
 ﻿using Data.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Data.Context
 {
-    public class StudentRegistrationBureauContext : DbContext
+    public class StudentRegistrationBureauContext : IdentityDbContext<AppUser>
     {
         public DbSet<Faculty> Faculties { get; set; }
         public DbSet<Major> Majors { get; set; }

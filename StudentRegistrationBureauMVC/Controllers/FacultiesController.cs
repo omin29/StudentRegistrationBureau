@@ -51,6 +51,13 @@ namespace StudentRegistrationBureauMVC.Controllers
         // GET: Faculties/Create
         public IActionResult Create()
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                // User is not authenticated, return a view with a message
+                return RedirectToAction(nameof(ErrorMessage));
+
+            }
+
             return View();
         }
 
@@ -78,6 +85,13 @@ namespace StudentRegistrationBureauMVC.Controllers
         // GET: Faculties/Edit/5
         public IActionResult Edit(int? id)
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                // User is not authenticated, return a view with a message
+                return RedirectToAction(nameof(ErrorMessage));
+
+            }
+
             if (id == null)
             {
                 return NotFound();
@@ -132,6 +146,13 @@ namespace StudentRegistrationBureauMVC.Controllers
         // GET: Faculties/Delete/5
         public IActionResult Delete(int? id)
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                // User is not authenticated, return a view with a message
+                return RedirectToAction(nameof(ErrorMessage));
+
+            }
+
             if (id == null)
             {
                 return NotFound();
@@ -164,6 +185,13 @@ namespace StudentRegistrationBureauMVC.Controllers
             }
 
             return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult ErrorMessage()
+        {
+            ViewBag.ErrorMessage = "You have to log in to use this action!";
+
+            return View();
         }
     }
 }

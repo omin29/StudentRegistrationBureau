@@ -15,6 +15,17 @@ namespace StudentRegistrationBureauMVC
             builder.Services.AddDbContext<StudentRegistrationBureauContext>(options => options.UseSqlServer(
                 builder.Configuration.GetConnectionString("DefaultConnection")
             ));
+
+            builder.Services.AddDefaultIdentity<AppUser>(options =>
+            {
+                options.SignIn.RequireConfirmedAccount = false;
+
+                //Other options go here
+            })
+            .AddEntityFrameworkStores<StudentRegistrationBureauContext>();
+
+            builder.Services.AddRazorPages();
+
             builder.Services.AddSingleton(typeof(MajorManagementService));
             builder.Services.AddSingleton(typeof(FacultyManagementService));
             builder.Services.AddSingleton(typeof(StudentManagementService));
@@ -34,7 +45,7 @@ namespace StudentRegistrationBureauMVC
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(
