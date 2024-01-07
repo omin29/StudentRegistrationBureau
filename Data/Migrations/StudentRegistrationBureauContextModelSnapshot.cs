@@ -369,13 +369,13 @@ namespace Data.Migrations
                     b.HasOne("Data.Entities.Course", "Course")
                         .WithMany("Enrollments")
                         .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Data.Entities.Student", "Student")
                         .WithMany("Enrollments")
                         .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Course");
@@ -388,13 +388,13 @@ namespace Data.Migrations
                     b.HasOne("Data.Entities.Faculty", "Faculty")
                         .WithMany("Students")
                         .HasForeignKey("FacultyId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Data.Entities.Major", "Major")
                         .WithMany("Students")
                         .HasForeignKey("MajorId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Faculty");

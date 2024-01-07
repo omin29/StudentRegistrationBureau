@@ -1,16 +1,16 @@
-﻿@model StudentRegistrationBureauMVC.Models.IndexVMs.StudentIndexVM
+﻿@model StudentRegistrationBureauMVC.Models.IndexVMs.EnrollmentIndexVM
 
 @{
-    ViewData["Title"] = "Students";
+    ViewData["Title"] = "Enrollments";
 }
 
-@{
+@* @{
     ViewData["FacultyId"] = Model.Filter.FacultyId;
-    ViewData["MajorId"] = Model.Filter.MajorId;
+    ViewData["CourseId"] = Model.Filter.CourseID;
     ViewData["FacultyNumber"] = Model.Filter.FacultyNumber;
-}
+} *@
 
-<h1>Students</h1>
+<h1>Enrollments</h1>
 
 <hr />
 
@@ -21,10 +21,6 @@
         <div class="form-group">
             <label asp-for="Filter.FacultyId" class="control-label"></label>
             <select asp-for="Filter.FacultyId" class="form-control" asp-items="ViewBag.Faculties"></select>
-        </div>
-        <div class="form-group">
-            <label asp-for="Filter.MajorId" class="control-label"></label>
-            <select asp-for="Filter.MajorId" class="form-control" asp-items="ViewBag.Majors"></select>
         </div>
         <div class="form-group">
             <label asp-for="Filter.FacultyNumber" class="control-label"></label>
@@ -50,41 +46,30 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameForInnerType((StudentVM s) => s.FullName)
-            </th>
-            <th>
                 @Html.DisplayNameForInnerType((StudentVM s) => s.FacultyNumber)
             </th>
             <th>
-                @Html.DisplayNameForInnerType((StudentVM s) => s.FacultyId)
-            </th>
-            <th>
-                @Html.DisplayNameForInnerType((StudentVM s) => s.MajorId)
+                @Html.DisplayNameForInnerType((StudentVM s) => s.FullName)
             </th>
             <th></th>
         </tr>
     </thead>
-  <tbody>
-    @foreach (var item in Model.Students!) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.FullName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FacultyNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Faculty!.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Major!.Name)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-    }
-  </tbody>
+    <tbody>
+        @foreach (var item in Model.Students!)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FacultyNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FullName)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
 </table>
