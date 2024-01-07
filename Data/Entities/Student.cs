@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Data.ValidationAttributes;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -13,18 +14,23 @@ namespace Data.Entities
     {
         [Required]
         [StringLength(50)]
+        [LettersOnly]
         public required string FirstName { get; set; }
 
         [Required]
         [StringLength(50)]
+        [LettersOnly]
         public required string MiddleName { get; set; }
 
         [Required]
         [StringLength(50)]
+        [LettersOnly]
         public required string LastName { get; set; }
 
         [Required]
-        [StringLength(maximumLength:10, ErrorMessage = "Invalid faculty number length!", MinimumLength = 10)]
+        [DigitsOnly]
+        [StringLength(maximumLength:10,
+            ErrorMessage = "Faculty number must consist of 10 digits!", MinimumLength = 10)]
         public required string FacultyNumber { get; set; }
 
         [Required]

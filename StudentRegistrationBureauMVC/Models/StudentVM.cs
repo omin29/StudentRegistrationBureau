@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
+using Data.ValidationAttributes;
 
 namespace StudentRegistrationBureauMVC.Models
 {
@@ -9,16 +10,19 @@ namespace StudentRegistrationBureauMVC.Models
     {
         [Required(ErrorMessage = "First name is required!")]
         [StringLength(50, ErrorMessage = "First name can't be longer than 50 characters!")]
+        [LettersOnly]
         [Display(Name = "First name")]
         public required string FirstName { get; set; }
 
         [Required(ErrorMessage = "Middle name is required!")]
         [StringLength(50, ErrorMessage = "Middle name can't be longer than 50 characters!")]
+        [LettersOnly]
         [Display(Name = "Middle name")]
         public required string MiddleName { get; set; }
 
         [Required(ErrorMessage = "Last name is required!")]
         [StringLength(50, ErrorMessage = "Last name can't be longer than 50 characters!")]
+        [LettersOnly]
         [Display(Name = "Last name")]
         public required string LastName { get; set; }
 
@@ -29,7 +33,9 @@ namespace StudentRegistrationBureauMVC.Models
         }
 
         [Required(ErrorMessage = "Faculty number is required!")]
-        [StringLength(maximumLength: 10, ErrorMessage = "Invalid faculty number length!", MinimumLength = 10)]
+        [DigitsOnly]
+        [StringLength(maximumLength: 10,
+            ErrorMessage = "Faculty number must consist of 10 digits!", MinimumLength = 10)]
         [Display(Name = "Faculty number")]
         public required string FacultyNumber { get; set; }
 
