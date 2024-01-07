@@ -11,6 +11,7 @@ using ApplicationService.Implementations;
 using StudentRegistrationBureauMVC.Models.IndexVMs;
 using StudentRegistrationBureauMVC.Models;
 using Microsoft.AspNetCore.Authorization;
+using StudentRegistrationBureauMVC.ActionFilters;
 
 namespace StudentRegistrationBureauMVC.Controllers
 {
@@ -65,16 +66,10 @@ namespace StudentRegistrationBureauMVC.Controllers
         }
 
         // GET: Students/Create
-        
+        [Authenticated]
+
         public IActionResult Create()
         {
-            if (!User.Identity.IsAuthenticated)
-            {
-                // User is not authenticated, return a view with a message
-                return RedirectToAction(nameof(ErrorMessage));
-
-            }
-
             //Getting all faculties and majors for making drop-down lists
             ViewData["FacultyId"] = new SelectList(_facultyService.Get(1, int.MaxValue), "Id", "Name");
             ViewData["MajorId"] = new SelectList(_majorService.Get(1, int.MaxValue), "Id", "Name");
@@ -83,6 +78,7 @@ namespace StudentRegistrationBureauMVC.Controllers
 
         // POST: Students/Create
         [HttpPost]
+        [Authenticated]
         [ValidateAntiForgeryToken]
         public IActionResult Create(StudentVM studentVM)
         {
@@ -106,15 +102,9 @@ namespace StudentRegistrationBureauMVC.Controllers
         }
 
         // GET: Students/Edit/5
+        [Authenticated]
         public IActionResult Edit(int? id)
         {
-            if (!User.Identity.IsAuthenticated)
-            {
-                // User is not authenticated, return a view with a message
-                return RedirectToAction(nameof(ErrorMessage));
-
-            }
-
             if (id == null)
             {
                 return NotFound();
@@ -133,6 +123,7 @@ namespace StudentRegistrationBureauMVC.Controllers
 
         // POST: Students/Edit/5
         [HttpPost]
+        [Authenticated]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, StudentVM studentVM)
         {
@@ -173,15 +164,9 @@ namespace StudentRegistrationBureauMVC.Controllers
         }
 
         // GET: Students/Delete/5
+        [Authenticated]
         public IActionResult Delete(int? id)
         {
-            if (!User.Identity.IsAuthenticated)
-            {
-                // User is not authenticated, return a view with a message
-                return RedirectToAction(nameof(ErrorMessage));
-
-            }
-
             if (id == null)
             {
                 return NotFound();
@@ -198,6 +183,7 @@ namespace StudentRegistrationBureauMVC.Controllers
 
         // POST: Students/Delete/5
         [HttpPost, ActionName("Delete")]
+        [Authenticated]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
@@ -215,13 +201,5 @@ namespace StudentRegistrationBureauMVC.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-
-        public IActionResult ErrorMessage()
-        {
-            ViewBag.ErrorMessage = "You have to log in to use this action!";
-
-            return View();
-        }
-
     }
 }

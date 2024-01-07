@@ -10,6 +10,7 @@ using Data.Entities;
 using ApplicationService.Implementations;
 using StudentRegistrationBureauMVC.Models;
 using StudentRegistrationBureauMVC.Models.IndexVMs;
+using StudentRegistrationBureauMVC.ActionFilters;
 
 namespace StudentRegistrationBureauMVC.Controllers
 {
@@ -49,20 +50,15 @@ namespace StudentRegistrationBureauMVC.Controllers
         }
 
         // GET: Faculties/Create
+        [Authenticated]
         public IActionResult Create()
         {
-            if (!User.Identity.IsAuthenticated)
-            {
-                // User is not authenticated, return a view with a message
-                return RedirectToAction(nameof(ErrorMessage));
-
-            }
-
             return View();
         }
 
         // POST: Faculties/Create
         [HttpPost]
+        [Authenticated]
         [ValidateAntiForgeryToken]
         public IActionResult Create(FacultyVM facultyVM)
         {
@@ -83,15 +79,9 @@ namespace StudentRegistrationBureauMVC.Controllers
         }
 
         // GET: Faculties/Edit/5
+        [Authenticated]
         public IActionResult Edit(int? id)
         {
-            if (!User.Identity.IsAuthenticated)
-            {
-                // User is not authenticated, return a view with a message
-                return RedirectToAction(nameof(ErrorMessage));
-
-            }
-
             if (id == null)
             {
                 return NotFound();
@@ -107,6 +97,7 @@ namespace StudentRegistrationBureauMVC.Controllers
 
         // POST: Faculties/Edit/5
         [HttpPost]
+        [Authenticated]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, FacultyVM facultyVM)
         {
@@ -144,15 +135,9 @@ namespace StudentRegistrationBureauMVC.Controllers
         }
 
         // GET: Faculties/Delete/5
+        [Authenticated]
         public IActionResult Delete(int? id)
         {
-            if (!User.Identity.IsAuthenticated)
-            {
-                // User is not authenticated, return a view with a message
-                return RedirectToAction(nameof(ErrorMessage));
-
-            }
-
             if (id == null)
             {
                 return NotFound();
@@ -169,6 +154,7 @@ namespace StudentRegistrationBureauMVC.Controllers
 
         // POST: Faculties/Delete/5
         [HttpPost, ActionName("Delete")]
+        [Authenticated]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
@@ -185,13 +171,6 @@ namespace StudentRegistrationBureauMVC.Controllers
             }
 
             return RedirectToAction(nameof(Index));
-        }
-
-        public IActionResult ErrorMessage()
-        {
-            ViewBag.ErrorMessage = "You have to log in to use this action!";
-
-            return View();
         }
     }
 }

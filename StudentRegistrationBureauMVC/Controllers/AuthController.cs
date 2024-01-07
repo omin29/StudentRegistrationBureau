@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using StudentRegistrationBureauMVC.ActionFilters;
 using StudentRegistrationBureauMVC.Models.IdentityVMs;
 
 namespace StudentRegistrationBureauMVC.Controllers
@@ -18,13 +19,14 @@ namespace StudentRegistrationBureauMVC.Controllers
         }
 
         [HttpGet]
+        [Anonymous]
         public IActionResult Register()
         {
             return View();
         }
 
         [HttpPost]
-        [AllowAnonymous]
+        [Anonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterVM model)
         {
@@ -49,12 +51,14 @@ namespace StudentRegistrationBureauMVC.Controllers
         }
 
         [HttpGet]
+        [Anonymous]
         public IActionResult LogIn()
         {
             return View();
         }
 
         [HttpPost]
+        [Anonymous]
         public async Task<IActionResult> LogIn(LogInVM model)
         {
             if (ModelState.IsValid)
@@ -79,10 +83,17 @@ namespace StudentRegistrationBureauMVC.Controllers
             return View(model);
         }
 
+        [Authenticated]
         public async Task<IActionResult> LogOut()
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("index", "home");
+        }
+
+        public IActionResult UnauthenticatedError()
+        {
+            ViewBag.ErrorMessage = "You have to log in to use this action!";
+            return View();
         }
     }
 }

@@ -46,8 +46,8 @@
             <ul class="navbar-nav flex-grow-1">
                 @if (SignInManager.IsSignedIn(User))
                 {
-                    <li class="nav-item">
-                        <a class="nav-link text-dark">Hello @User.Identity.Name!</a>
+                    <li>
+                        <a class="nav-link text-dark">Hello @User.Identity!.Name!</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-dark" asp-area="" asp-controller="Auth" asp-action="LogOut">Sign Out</a>
