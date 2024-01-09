@@ -4,8 +4,6 @@ using Repository.Implementations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ApplicationService.Implementations
 {
@@ -13,12 +11,11 @@ namespace ApplicationService.Implementations
     {
         public IEnumerable<Student> Get(int page, int itemsPerPage, IFilterBuilder<Student>? filterBuilder = null)
         {
-            List<Student> studentList = new List<Student>();
             using (UnitOfWork unitOfWork = new UnitOfWork())
             {
-                IEnumerable<Student> students;
                 string include = "Enrollments.Course"; // Include the "Course" navigation property
 
+                IEnumerable<Student> students;
                 if (filterBuilder == null)
                 {
                     students = unitOfWork.StudentRepository.Get(includeProperties: include);
@@ -37,14 +34,13 @@ namespace ApplicationService.Implementations
                 else
                 {
                     // Returning empty list when accessing non-existent page
-                    return studentList;
+                    return Enumerable.Empty<Student>();
                 }
 
-                studentList = students.ToList();
+                return students.ToList();
             }
-
-            return studentList;
         }
+
 
 
         public int GetPageCount(int itemsPerPage, IFilterBuilder<Student>? filterBuilder = null)
@@ -53,8 +49,6 @@ namespace ApplicationService.Implementations
             {
                 return 1;
             }
-
-            int pageCount = 0;
 
             using (UnitOfWork unitOfWork = new UnitOfWork())
             {
@@ -69,10 +63,84 @@ namespace ApplicationService.Implementations
                     studentCount = unitOfWork.StudentRepository.Count(filter);
                 }
 
-                pageCount = (int)Math.Ceiling((double)studentCount / itemsPerPage);
+                return (int)Math.Ceiling((double)studentCount / itemsPerPage);
+            }
+        }
+
+        // New method to fetch enrollments for a list of student IDs
+        public IEnumerable<Enrollment> GetEnrollmentsForStudents(IEnumerable<int> studentIds, string selectedCourse)
+        {
+            using (UnitOfWork unitOfWork = new UnitOfWork())
+            {
+                // Fetching enrollments based on student IDs and the selected course
+                var enrollments = unitOfWork.EnrollmentRepository
+                    .Get(filter: e => studentIds.Contains(e.StudentId) && (string.IsNullOrEmpty(selectedCourse) || e.Course.Name == selectedCourse), includeProperties: "Course")
+                    .ToList();
+
+                return enrollments;
+            }
+        }
+
+        public Enrollment? GetById(int id)
+        {
+            Enrollment? enrollment = null;
+
+            using (UnitOfWork unitOfWork = new UnitOfWork())
+            {
+                enrollment = unitOfWork.EnrollmentRepository.GetByID(id,"Student,Course");
             }
 
-            return pageCount;
+            return enrollment;
+        }
+
+        public bool Exists(int id)
+        {
+            return GetById(id) != null;
+        }
+
+        public bool Delete(int id)
+        {
+            try
+            {
+                using (UnitOfWork unitOfWork = new UnitOfWork())
+                {
+                    Enrollment enrollment = unitOfWork.EnrollmentRepository.GetByID(id);
+                    unitOfWork.EnrollmentRepository.Delete(enrollment);
+                    unitOfWork.Save();
+                }
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public bool Save(Enrollment enrollment)
+        {
+            try
+            {
+                using (UnitOfWork unitOfWork = new UnitOfWork())
+                {
+                    if (enrollment.Id == 0)
+                    {
+                        unitOfWork.EnrollmentRepository.Insert(enrollment);
+                    }
+                    else
+                    {
+                        unitOfWork.EnrollmentRepository.Update(enrollment);
+                    }
+
+                    unitOfWork.Save();
+                }
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

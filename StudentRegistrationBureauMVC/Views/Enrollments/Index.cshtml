@@ -4,12 +4,6 @@
     ViewData["Title"] = "Enrollments";
 }
 
-@* @{
-    ViewData["FacultyId"] = Model.Filter.FacultyId;
-    ViewData["CourseId"] = Model.Filter.CourseID;
-    ViewData["FacultyNumber"] = Model.Filter.FacultyNumber;
-} *@
-
 <h1>Enrollments</h1>
 
 <hr />
@@ -19,8 +13,14 @@
     <form method="get" class="d-inline-block mb-1">
         <input type="hidden" name="Pager.ItemsPerPage" value="@Model.Pager.ItemsPerPage" />
         <div class="form-group">
-            <label asp-for="Filter.FacultyId" class="control-label"></label>
-            <select asp-for="Filter.FacultyId" class="form-control" asp-items="ViewBag.Faculties"></select>
+            <label asp-for="Filter.CourseName" class="control-label"></label>
+            <select asp-for="Filter.CourseName" class="form-control">
+                <option value="">All Courses</option>
+                @foreach (var course in Model.CourseList)
+                {
+                    <option value="@course.Value">@course.Text</option>
+                }
+            </select>
         </div>
         <div class="form-group">
             <label asp-for="Filter.FacultyNumber" class="control-label"></label>
@@ -29,16 +29,16 @@
         <div class="form-group d-flex gap-5">
             <input type="submit" class="btn btn-primary" value="Filter" />
             <a asp-action="Index" asp-route-Pager.ItemsPerPage="@Model.Pager.ItemsPerPage">
-                <!button type="button" class="btn btn-light border-dark">Clear filter</!button>
+                <button type="button" class="btn btn-light border-dark">Clear filter</button>
             </a>
         </div>
     </form>
 </div>
 
 @{
-    await Html.RenderPartialAsync("/Views/Partial/StudentPagerPartial.cshtml", Model.Pager, ViewData);
+    var partialHtml = await Html.PartialAsync("/Views/Partial/StudentPagerPartial.cshtml", Model.Pager, ViewData);
+    @partialHtml
 }
-
 <p>
     <a asp-action="Create">Create New</a>
 </p>
@@ -46,30 +46,56 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameForInnerType((StudentVM s) => s.FacultyNumber)
+                @Html.DisplayNameFor(model => model.Students.First().FacultyNumber)
             </th>
             <th>
-                @Html.DisplayNameForInnerType((StudentVM s) => s.FullName)
+                @Html.DisplayNameFor(model => model.Students.First().FullName)
+            </th>
+            <th>
+                @Html.DisplayName("Course Name")
+            </th>
+            <th>
+                @Html.DisplayName("Grade")
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.Students!)
+        @foreach (var student in Model.Students!)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FacultyNumber)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FullName)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
-            </tr>
+            @foreach (var enrollment in Model.Enrollments!.Where(e => e.StudentId == student.Id))
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => student.FacultyNumber)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => student.FullName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => enrollment.CourseName)
+                        <br />
+                    </td>
+                    <td>
+                        @if (enrollment.Grade != null)
+                        {
+                            @Html.DisplayFor(modelItem => enrollment.Grade)
+                        }
+                        else
+                        {
+                            @Html.Raw("Not Graded")
+                        }
+
+                        <br />
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@enrollment.Id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@enrollment.Id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@enrollment.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+
         }
     </tbody>
 </table>
