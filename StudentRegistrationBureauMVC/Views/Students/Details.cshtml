@@ -32,6 +32,7 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Major!.Name)
         </dd>
+        <a asp-action="Index" asp-controller="Enrollments" asp-route-Filter.FacultyNumber="@Model?.FacultyNumber">See grades</a>
     </dl>
 </div>
 <div>
