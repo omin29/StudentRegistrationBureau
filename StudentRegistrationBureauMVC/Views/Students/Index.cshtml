@@ -14,6 +14,9 @@
 
 <hr />
 
+
+
+
 <div class="mb-2">
     <h4>Filtering options</h4>
     <form method="get" class="d-inline-block mb-1">
@@ -46,6 +49,15 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
+<div>
+    <a asp-action="ExportAllStudents" asp-controller="Students" class="btn btn-primary mb-3">Export All Students</a>
+</div>
+
+<div>
+    <a asp-action="ImportStudents" asp-controller="Students" class="btn btn-primary mb-3">Import</a>
+</div>
+
 <table class="table">
     <thead>
         <tr>
