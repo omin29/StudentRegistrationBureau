@@ -1,0 +1,17 @@
+﻿
+@{
+    ViewData["Title"] = "ImportStudents";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>ImportStudents</h1>
+
+<form asp-action="ImportStudents" asp-controller="Students" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label>Import file</label>
+        <input id="batchStudents" name="batchStudents" class="form-control" type="file" />
+        <button type="submit" class="btn btn-primary">Import</button>
+    </div>
+
+</form>
+

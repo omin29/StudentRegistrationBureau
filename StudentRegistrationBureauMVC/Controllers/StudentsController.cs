@@ -12,6 +12,9 @@ using StudentRegistrationBureauMVC.Models.IndexVMs;
 using StudentRegistrationBureauMVC.Models;
 using Microsoft.AspNetCore.Authorization;
 using StudentRegistrationBureauMVC.ActionFilters;
+using OfficeOpenXml;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup;
+using System.Diagnostics;
 
 namespace StudentRegistrationBureauMVC.Controllers
 {
@@ -200,6 +203,126 @@ namespace StudentRegistrationBureauMVC.Controllers
             }
 
             return RedirectToAction(nameof(Index));
+        }
+
+
+        [Authenticated]
+        public IActionResult ExportAllStudents()
+        {
+            StudentIndexVM model = new StudentIndexVM();
+
+            model.Pager.ItemsPerPage = int.MaxValue;
+
+            List<Student> students = _studentService.Get(model.Pager.Page, model.Pager.ItemsPerPage, model.Filter).ToList();
+
+
+            var stream = new MemoryStream();
+
+            using(var xlPackage = new ExcelPackage(stream))
+            {
+                var worksheet = xlPackage.Workbook.Worksheets.Add("Students");
+
+                worksheet.Cells["A1"].Value = "First Name";
+                worksheet.Cells["B1"].Value = "Middle Name";
+                worksheet.Cells["C1"].Value = "Last Name";
+                worksheet.Cells["D1"].Value = "Faculty number";
+                worksheet.Cells["E1"].Value = "Faculty";
+                worksheet.Cells["F1"].Value = "Major";
+
+
+                var row = 2;
+                foreach(var student in students)
+                {
+
+                    worksheet.Cells[row, 1].Value = student.FirstName;
+                    worksheet.Cells[row, 2].Value = student.MiddleName;
+                    worksheet.Cells[row, 3].Value = student.LastName;
+                    worksheet.Cells[row, 4].Value = student.FacultyNumber;
+                    worksheet.Cells[row, 5].Value = student.Faculty.Name;
+                    worksheet.Cells[row, 6].Value = student.Major.Name;
+
+                    row++;
+                }
+
+                xlPackage.Workbook.Properties.Title = "Student List";
+                xlPackage.Workbook.Properties.Author = "Nikola";
+
+                xlPackage.Save();
+
+            }
+
+            stream.Position = 0;
+
+            return File(stream,"application/vnd.openxmlformats-officedocument.spreadsheethml.sheet", "students.xlsx");
+        }
+
+        [HttpGet]
+        public IActionResult ImportStudents()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult ImportStudents(IFormFile file)
+        {
+            if(ModelState.IsValid)
+            {
+                if (file?.Length > 0)
+                {
+                    var stream = file.OpenReadStream();
+
+                    List<Student> students = new List<Student>();
+
+                    try
+                    {
+                        using(var package = new ExcelPackage(stream))
+                        {
+                            var worksheet = package.Workbook.Worksheets.First();
+                            var rowCount = worksheet.Dimension.Rows;
+
+                            for(var row = 1 ; row <= rowCount; row++)
+                            {
+                                try
+                                {
+                                    var firstName = worksheet.Cells[row, 1].Value?.ToString();
+                                    var middleName = worksheet.Cells[row, 2].Value?.ToString();
+                                    var lastName = worksheet.Cells[row, 3].Value?.ToString();
+                                    var facultyNumber = worksheet.Cells[row, 4].Value?.ToString();
+                                    var facultyId = worksheet.Cells[row, 5].Value;
+                                    var majorId = worksheet.Cells[row, 6].Value;
+
+                                    var student = new Student()
+                                    {
+                                        FirstName = firstName,
+                                        MiddleName = middleName,
+                                        LastName = middleName,
+                                        FacultyNumber = facultyNumber,
+                                        Faculty = (Faculty)facultyId,
+                                        Major = (Major)majorId
+                                    
+                                    };
+
+                                    students.Add(student);
+                                }
+                                catch(Exception ex)
+                                {
+                                    Console.WriteLine(ex.Message);
+                                }
+                            }
+                        }
+
+                        return RedirectToAction(nameof(Index));
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+                }
+            }
+
+        
+            return View();
         }
     }
 }
