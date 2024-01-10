@@ -19,8 +19,6 @@ namespace ApplicationService.FilterBuilders
 
         [Display(Name = "Faculty number")]
         public string? FacultyNumber { get; set; }
-        [Display(Name = "Course name")]
-        public string? CourseName { get; set; }
         public string? FirstName { get; set; }
         public string? MiddleName { get; set; }
         public string? LastName { get; set; }
@@ -29,12 +27,11 @@ namespace ApplicationService.FilterBuilders
             Expression<Func<Student, bool>> filter =
                 (student =>
                     (FacultyId != 0 ? student.FacultyId == FacultyId : true) &&
-                (MajorId != 0 ? student.MajorId == MajorId : true) &&
-                (!string.IsNullOrEmpty(FacultyNumber) ? student.FacultyNumber == FacultyNumber : true) &&
-                (!string.IsNullOrEmpty(FirstName) ? student.FirstName == FirstName : true) &&
-                (!string.IsNullOrEmpty(MiddleName) ? student.MiddleName == MiddleName : true) &&
-                (!string.IsNullOrEmpty(LastName) ? student.LastName == LastName : true) &&
-                (!string.IsNullOrEmpty(CourseName) ? student.Enrollments.Any(e => e.Course.Name.Contains(CourseName)) : true)
+                    (MajorId != 0 ? student.MajorId == MajorId : true) &&
+                    (!string.IsNullOrEmpty(FacultyNumber) ? student.FacultyNumber == FacultyNumber : true) &&
+                    (!string.IsNullOrEmpty(FirstName) ? student.FirstName == FirstName : true) &&
+                    (!string.IsNullOrEmpty(MiddleName) ? student.MiddleName == MiddleName : true) &&
+                    (!string.IsNullOrEmpty(LastName) ? student.LastName == LastName : true)
                 );
 
             return filter;

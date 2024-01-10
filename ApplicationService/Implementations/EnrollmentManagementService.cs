@@ -9,76 +9,67 @@ namespace ApplicationService.Implementations
 {
     public class EnrollmentManagementService : BaseService
     {
-        public IEnumerable<Student> Get(int page, int itemsPerPage, IFilterBuilder<Student>? filterBuilder = null)
+        public IEnumerable<Enrollment> Get(int page, int itemsPerPage, IFilterBuilder<Enrollment>? filterBuilder = null)
         {
+            List<Enrollment> enrollmentList = new List<Enrollment>();
             using (UnitOfWork unitOfWork = new UnitOfWork())
             {
-                string include = "Enrollments.Course"; // Include the "Course" navigation property
+                IEnumerable<Enrollment> enrollments;
+                string include = "Student,Course";
 
-                IEnumerable<Student> students;
-                if (filterBuilder == null)
+                if(filterBuilder == null)
                 {
-                    students = unitOfWork.StudentRepository.Get(includeProperties: include);
+                    enrollments = unitOfWork.EnrollmentRepository.Get(includeProperties: include);
                 }
                 else
                 {
                     var filter = filterBuilder.BuildFilter();
-                    students = unitOfWork.StudentRepository.Get(filter: filter, includeProperties: include);
+                    enrollments = unitOfWork.EnrollmentRepository.Get(filter: filter, includeProperties: include);
                 }
 
-                // Applying pagination
-                if (ValidatePaginationOptions(page, itemsPerPage) && page <= GetPageCount(itemsPerPage, students))
+                //Applying pagination
+                if (ValidatePaginationOptions(page, itemsPerPage) && page <= GetPageCount(itemsPerPage, enrollments))
                 {
-                    students = students.Skip((page - 1) * itemsPerPage).Take(itemsPerPage).ToList();
+                    enrollments = enrollments.Skip((page - 1) * itemsPerPage).Take(itemsPerPage).ToList();
                 }
                 else
                 {
-                    // Returning empty list when accessing non-existent page
-                    return Enumerable.Empty<Student>();
+                    //Returning empty list when accessing non-existent page
+                    return enrollmentList;
                 }
 
-                return students.ToList();
+                enrollmentList = enrollments.ToList();
             }
+
+            return enrollmentList;
         }
 
-
-
-        public int GetPageCount(int itemsPerPage, IFilterBuilder<Student>? filterBuilder = null)
+        public int GetPageCount(int itemsPerPage, IFilterBuilder<Enrollment>? filterBuilder = null)
         {
             if (itemsPerPage <= 0)
             {
                 return 1;
             }
 
+            int pageCount = 0;
+
             using (UnitOfWork unitOfWork = new UnitOfWork())
             {
-                int studentCount = 0;
+                int enrollmentCount = 0;
                 if (filterBuilder == null)
                 {
-                    studentCount = unitOfWork.StudentRepository.Count();
+                    enrollmentCount = unitOfWork.EnrollmentRepository.Count();
                 }
                 else
                 {
                     var filter = filterBuilder.BuildFilter();
-                    studentCount = unitOfWork.StudentRepository.Count(filter);
+                    enrollmentCount = unitOfWork.EnrollmentRepository.Count(filter);
                 }
 
-                return (int)Math.Ceiling((double)studentCount / itemsPerPage);
+                pageCount = (int)Math.Ceiling((double)enrollmentCount / itemsPerPage);
             }
-        }
 
-        // New method to fetch enrollments for a list of student IDs
-        public IEnumerable<Enrollment> GetEnrollmentsForStudents(IEnumerable<int> studentIds, string selectedCourse)
-        {
-            using (UnitOfWork unitOfWork = new UnitOfWork())
-            {
-                // Fetching enrollments based on student IDs and the selected course
-                var enrollments = unitOfWork.EnrollmentRepository
-                    .Get(filter: e => studentIds.Contains(e.StudentId) && (string.IsNullOrEmpty(selectedCourse) || e.Course.Name == selectedCourse), includeProperties: "Course")
-                    .ToList();
-
-                return enrollments;
-            }
+            return pageCount;
         }
 
         public Enrollment? GetById(int id)

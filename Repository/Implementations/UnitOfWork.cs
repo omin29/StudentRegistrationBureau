@@ -78,12 +78,7 @@ namespace Repository.Implementations
                 }
                 return enrollmentRepository;
             }
-
-
-
-
         }
-
 
         public void Save()
         {

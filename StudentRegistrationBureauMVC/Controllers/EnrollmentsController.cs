@@ -29,26 +29,13 @@ public class EnrollmentsController : Controller
     // GET: Students
     public IActionResult Index(EnrollmentIndexVM model)
     {
-        // Fetch students based on the filter
-        IEnumerable<Student> students = _enrollmentService.Get(model.Pager.Page, model.Pager.ItemsPerPage, model.Filter);
-
-        // Fetch enrollments based on student IDs and the selected course
-        IEnumerable<Enrollment> enrollments = _enrollmentService.GetEnrollmentsForStudents(students.Select(s => s.Id), model.Filter.CourseName);
-
-        // Fetch courses
-        List<Course> courses = _courseService.Get(1, int.MaxValue).ToList();
-        courses.Insert(0, new Course() { Id = 0, Name = "-" });
-
-        // Map students, courses, and enrollments to the view models
-        model.Students = students.Select(student => new StudentVM(student));
-        model.Courses = courses.Select(course => new CourseVM(course));
+        IEnumerable<Enrollment> enrollments = _enrollmentService.Get(model.Pager.Page, model.Pager.ItemsPerPage, model.Filter);
         model.Enrollments = enrollments.Select(enrollment => new EnrollmentVM(enrollment));
-
-        // Set the number of pages for pagination
         model.Pager.PagesCount = _enrollmentService.GetPageCount(model.Pager.ItemsPerPage, model.Filter);
 
-        // Populate course names for the dropdown list
-        model.CourseList = courses.Select(course => new SelectListItem { Value = course.Name, Text = course.Name }).ToList();
+        List<Course> courses = _courseService.Get(1, int.MaxValue).ToList();
+        courses.Insert(0, new Course() { Id = 0, Name = string.Empty });
+        ViewData["Courses"] = new SelectList(courses, "Name", "Name", model.Filter.Course);
 
         return View(model);
     }
@@ -109,6 +96,7 @@ public class EnrollmentsController : Controller
         return View(new EnrollmentVM(enrollment));
     }
 
+    [Authenticated]
     public IActionResult Edit(int? id)
     {
         if (id == null)
@@ -135,7 +123,7 @@ public class EnrollmentsController : Controller
             return NotFound();
         }
 
-       /* if (ModelState.IsValid)*/
+        if (ModelState.IsValid)
         {
             try
             {
@@ -157,10 +145,14 @@ public class EnrollmentsController : Controller
                     throw;
                 }
             }
+            ViewData["ErrorMessage"] =
+                "Failed to edit enrollment!";
         }
+
         return View(enrollmentVM);
     }
 
+    [Authenticated]
     public IActionResult Create()
     {
         // Getting all faculties and majors for making drop-down lists
@@ -177,6 +169,8 @@ public class EnrollmentsController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult Create(EnrollmentVM enrollmentVM)
     {
+        if (ModelState.IsValid)
+        {
             Enrollment createdEnrollment = enrollmentVM.ToEntity();
             createdEnrollment.Id = 0;
             bool isSuccessful = _enrollmentService.Save(createdEnrollment);
@@ -187,10 +181,13 @@ public class EnrollmentsController : Controller
 
             ViewData["ErrorMessage"] =
                 "Failed to create enrollment! The student is already enrolled in the specified Course.";
+        }
 
         // Getting all faculties and majors for making drop-down lists
-        ViewBag.Students = new SelectList(_studentService.Get(1, int.MaxValue), "Id", "Name", enrollmentVM.StudentId);
-        ViewBag.Courses = new SelectList(_courseService.Get(1, int.MaxValue), "Id", "Name", enrollmentVM.CourseId);
+        ViewData["StudentId"] = new SelectList(_studentService.Get(1, int.MaxValue)
+         .Select(s => new SelectListItem { Value = s.Id.ToString(), Text = $"{s.FirstName} {s.MiddleName} {s.LastName} - {s.FacultyNumber}" }), "Value", "Text");
+
+        ViewData["CourseId"] = new SelectList(_courseService.Get(1, int.MaxValue), "Id", "Name");
         return View(enrollmentVM);
     }
 }

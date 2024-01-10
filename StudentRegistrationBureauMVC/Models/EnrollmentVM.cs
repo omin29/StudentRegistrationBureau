@@ -1,20 +1,35 @@
 ﻿using Data.Entities;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
 namespace StudentRegistrationBureauMVC.Models
 {
     public class EnrollmentVM : BaseVM
     {
-        public int Id { get; set; }
-
+        [Required(ErrorMessage = "Course is required!")]
+        [Display(Name = "Course")]
         public int CourseId { get; set; }
-        public string CourseName { get; set; } 
 
+        [Display(Name = "Course")]
+        public string? CourseName { get; set; }
+
+        [Required(ErrorMessage = "Student is required!")]
+        [Display(Name = "Student")]
         public int StudentId { get; set; }
-        public string StudentFullName { get; set; } 
+
+        [Display(Name = "Student")]
+        public string? StudentFullName { get; set; }
+
+        [Display(Name = "Faculty number")]
+        public string? FacultyNumber
+        {
+            get { return Student?.FacultyNumber; }
+        }
 
         public virtual Student? Student { get; set; }
         public virtual Course? Course { get; set; }
+
+        [Range(2, 6)]
         public int? Grade { get; set; }
 
         public EnrollmentVM() { }
@@ -30,6 +45,7 @@ namespace StudentRegistrationBureauMVC.Models
             StudentId = enrollment.StudentId;
             Grade = enrollment.Grade;
             Student = enrollment.Student;
+            Course = enrollment.Course;
         }
 
         public Enrollment ToEntity()
