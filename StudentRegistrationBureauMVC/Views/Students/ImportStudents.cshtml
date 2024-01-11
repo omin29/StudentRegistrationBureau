@@ -4,14 +4,21 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>ImportStudents</h1>
+<h1>Import students</h1>
 
 <form asp-action="ImportStudents" asp-controller="Students" method="post" enctype="multipart/form-data">
+    <div asp-validation-summary="All" class="text-danger"></div>
     <div class="form-group">
-        <label>Import file</label>
+        <label>Import Excel file with student data</label>
         <input id="batchStudents" name="batchStudents" class="form-control" type="file" />
+    </div>
+    <div class="form-group">
         <button type="submit" class="btn btn-primary">Import</button>
     </div>
-
 </form>
 
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -24,3 +24,7 @@
 .table tbody tr:nth-child(even) {
     background-color: #EBF3FF;
 }
+
+.bg-medium-sapphire {
+    background-color: #2D5DA1;
+}

@@ -228,6 +228,8 @@ namespace StudentRegistrationBureauMVC.Controllers
                 worksheet.Cells["D1"].Value = "Faculty number";
                 worksheet.Cells["E1"].Value = "Faculty";
                 worksheet.Cells["F1"].Value = "Major";
+                worksheet.Cells["G1"].Value = "FacultyId";
+                worksheet.Cells["H1"].Value = "MajorId";
 
 
                 var row = 2;
@@ -240,12 +242,14 @@ namespace StudentRegistrationBureauMVC.Controllers
                     worksheet.Cells[row, 4].Value = student.FacultyNumber;
                     worksheet.Cells[row, 5].Value = student.Faculty.Name;
                     worksheet.Cells[row, 6].Value = student.Major.Name;
+                    worksheet.Cells[row, 7].Value = student.FacultyId;
+                    worksheet.Cells[row, 8].Value = student.MajorId;
 
                     row++;
                 }
 
                 xlPackage.Workbook.Properties.Title = "Student List";
-                xlPackage.Workbook.Properties.Author = "Nikola";
+                xlPackage.Workbook.Properties.Author = HttpContext.User.Identity!.Name;
 
                 xlPackage.Save();
 
@@ -257,20 +261,28 @@ namespace StudentRegistrationBureauMVC.Controllers
         }
 
         [HttpGet]
+        [Authenticated]
         public IActionResult ImportStudents()
         {
             return View();
         }
 
         [HttpPost]
+        [Authenticated]
         [ValidateAntiForgeryToken]
-        public IActionResult ImportStudents(IFormFile file)
+        public IActionResult ImportStudents(IFormFile batchStudents)
         {
-            if(ModelState.IsValid)
+            if(batchStudents != null &&
+                batchStudents.ContentType != "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
             {
-                if (file?.Length > 0)
+                ModelState.AddModelError("File type", "The uploaded file isn't Excel file.");
+            }
+
+            if (ModelState.IsValid)
+            {
+                if (batchStudents?.Length > 0)
                 {
-                    var stream = file.OpenReadStream();
+                    var stream = batchStudents.OpenReadStream();
 
                     List<Student> students = new List<Student>();
 
@@ -281,47 +293,44 @@ namespace StudentRegistrationBureauMVC.Controllers
                             var worksheet = package.Workbook.Worksheets.First();
                             var rowCount = worksheet.Dimension.Rows;
 
-                            for(var row = 1 ; row <= rowCount; row++)
+                            for(var row = 2 ; row <= rowCount; row++)
                             {
-                                try
-                                {
-                                    var firstName = worksheet.Cells[row, 1].Value?.ToString();
-                                    var middleName = worksheet.Cells[row, 2].Value?.ToString();
-                                    var lastName = worksheet.Cells[row, 3].Value?.ToString();
-                                    var facultyNumber = worksheet.Cells[row, 4].Value?.ToString();
-                                    var facultyId = worksheet.Cells[row, 5].Value;
-                                    var majorId = worksheet.Cells[row, 6].Value;
+                                string firstName = worksheet.Cells[row, 1].Value?.ToString()!;
+                                string middleName = worksheet.Cells[row, 2].Value?.ToString()!;
+                                string lastName = worksheet.Cells[row, 3].Value?.ToString()!;
+                                string facultyNumber = worksheet.Cells[row, 4].Value?.ToString()!;
+                                int facultyId = Convert.ToInt32(worksheet.Cells[row, 7].Value);
+                                int majorId = Convert.ToInt32(worksheet.Cells[row, 8].Value);
 
-                                    var student = new Student()
-                                    {
-                                        FirstName = firstName,
-                                        MiddleName = middleName,
-                                        LastName = middleName,
-                                        FacultyNumber = facultyNumber,
-                                        Faculty = (Faculty)facultyId,
-                                        Major = (Major)majorId
-                                    
-                                    };
-
-                                    students.Add(student);
-                                }
-                                catch(Exception ex)
+                                var student = new Student()
                                 {
-                                    Console.WriteLine(ex.Message);
-                                }
+                                    Id = 0,
+                                    FirstName = firstName!,
+                                    MiddleName = middleName!,
+                                    LastName = lastName!,
+                                    FacultyNumber = facultyNumber!,
+                                    FacultyId = facultyId,
+                                    MajorId = majorId,
+                                    Faculty = null!,
+                                    Major = null!
+                                };
+
+                                students.Add(student);
                             }
                         }
+
+                        _studentService.ImportStudents(students);
 
                         return RedirectToAction(nameof(Index));
                     }
                     catch (Exception ex)
                     {
                         Console.WriteLine(ex.Message);
+                        ModelState.AddModelError("Import fail", "Failed to import students!");
                     }
                 }
             }
 
-        
             return View();
         }
     }

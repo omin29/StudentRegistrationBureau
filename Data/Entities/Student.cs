@@ -36,16 +36,14 @@ namespace Data.Entities
         [Required]
         public int FacultyId { get; set; }
 
-        [Required]
         [ForeignKey(nameof(FacultyId))]
-        public required virtual Faculty Faculty { get; set; }
+        public virtual Faculty? Faculty { get; set; }
 
         [Required]
         public int MajorId { get; set; }
 
-        [Required]
         [ForeignKey(nameof(MajorId))]
-        public required virtual Major Major { get; set; }
+        public virtual Major? Major { get; set; }
 
         public virtual ICollection<Enrollment>? Enrollments { get; set; }
     }

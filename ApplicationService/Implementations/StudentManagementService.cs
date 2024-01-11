@@ -3,6 +3,7 @@ using Data.Entities;
 using Repository.Implementations;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -135,6 +136,21 @@ namespace ApplicationService.Implementations
             }
 
             return pageCount;
+        }
+
+        public void ImportStudents(IEnumerable<Student> students)
+        {
+            //Does not handle potential exceptions. They should be caught on higher level.
+            using (UnitOfWork unitOfWork = new UnitOfWork())
+            {
+                foreach (var student in students)
+                {
+                    Validator.ValidateObject(student, new ValidationContext(student), true);
+                    unitOfWork.StudentRepository.Insert(student);
+                }
+
+                unitOfWork.Save();
+            }
         }
     }
 }

@@ -46,17 +46,14 @@
     await Html.RenderPartialAsync("/Views/Partial/StudentPagerPartial.cshtml", Model.Pager, ViewData);
 }
 
+<div class="d-flex gap-5">
+    <a asp-action="ExportAllStudents" asp-controller="Students" class="btn text-light bg-medium-sapphire mb-3">Export All Students</a>
+    <a asp-action="ImportStudents" asp-controller="Students" class="btn text-light bg-medium-sapphire mb-3">Import</a>
+</div>
+
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-
-<div>
-    <a asp-action="ExportAllStudents" asp-controller="Students" class="btn btn-primary mb-3">Export All Students</a>
-</div>
-
-<div>
-    <a asp-action="ImportStudents" asp-controller="Students" class="btn btn-primary mb-3">Import</a>
-</div>
 
 <table class="table">
     <thead>
